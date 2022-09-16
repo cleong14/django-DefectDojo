@@ -860,11 +860,11 @@ def show_toolbar(request):
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": show_toolbar,
     "INTERCEPT_REDIRECTS": False,
-    "SHOW_COLLAPSED": True,
+    "SHOW_COLLAPSED": False,
 }
 
 DEBUG_TOOLBAR_PANELS = [
-    'ddt_request_history.panels.request_history.RequestHistoryPanel',  # Here it is
+    # 'ddt_request_history.panels.request_history.RequestHistoryPanel',  # Here it is
     'debug_toolbar.panels.versions.VersionsPanel',
     'debug_toolbar.panels.timer.TimerPanel',
     'debug_toolbar.panels.settings.SettingsPanel',
@@ -872,13 +872,13 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.request.RequestPanel',
     'debug_toolbar.panels.sql.SQLPanel',
     'debug_toolbar.panels.templates.TemplatesPanel',
-    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    # 'debug_toolbar.panels.staticfiles.StaticFilesPanel',
     'debug_toolbar.panels.cache.CachePanel',
     'debug_toolbar.panels.signals.SignalsPanel',
     'debug_toolbar.panels.logging.LoggingPanel',
     'debug_toolbar.panels.redirects.RedirectsPanel',
     'debug_toolbar.panels.profiling.ProfilingPanel',
-    'cachalot.panels.CachalotPanel',
+    # 'cachalot.panels.CachalotPanel',
 ]
 
 EXTRA_URL_PATTERNS = [url(r"^__debug__/", include(debug_toolbar.urls))]
