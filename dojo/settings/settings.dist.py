@@ -5,6 +5,8 @@ from celery.schedules import crontab
 from dojo import __version__
 import environ
 from netaddr import IPNetwork, IPSet
+from django.conf.urls import include, url
+import debug_toolbar
 
 # See https://documentation.defectdojo.com/getting_started/configuration/ for options
 # how to tune the configuration to your needs.
@@ -779,6 +781,7 @@ TEMPLATES = [
 # APPS
 # ------------------------------------------------------------------------------
 
+# WIP: test-dojo: add `debug_toolbar` here
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -803,7 +806,8 @@ INSTALLED_APPS = (
     'social_django',
     'drf_yasg',
     'drf_spectacular',
-    'tagulous'
+    'tagulous',
+    'debug_toolbar'
 )
 
 # ------------------------------------------------------------------------------
@@ -824,6 +828,7 @@ DJANGO_MIDDLEWARE_CLASSES = [
     'auditlog.middleware.AuditlogMiddleware',
     'crum.CurrentRequestUserMiddleware',
     'dojo.request_cache.middleware.RequestCacheMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
 
 MIDDLEWARE = DJANGO_MIDDLEWARE_CLASSES
@@ -842,6 +847,41 @@ EMAIL_CONFIG = env.email_url(
     'DD_EMAIL_URL', default='smtp://user@:password@localhost:25')
 
 vars().update(EMAIL_CONFIG)
+
+# ------------------------------------------------------------------------------
+# DEBUG_TOOLBAR
+# ------------------------------------------------------------------------------
+
+
+def show_toolbar(request):
+    return True
+
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+    "INTERCEPT_REDIRECTS": False,
+    "SHOW_COLLAPSED": True,
+}
+
+DEBUG_TOOLBAR_PANELS = [
+    'ddt_request_history.panels.request_history.RequestHistoryPanel',  # Here it is
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+    'debug_toolbar.panels.profiling.ProfilingPanel',
+    'cachalot.panels.CachalotPanel',
+]
+
+EXTRA_URL_PATTERNS = [url(r"^__debug__/", include(debug_toolbar.urls))]
 
 # ------------------------------------------------------------------------------
 # SAML
@@ -1132,6 +1172,7 @@ if env('DD_DJANGO_METRICS_ENABLED'):
 # legacy is:
 #   static scanner:  ['title', 'cwe', 'line', 'file_path', 'description']
 #   dynamic scanner: ['title', 'cwe', 'line', 'file_path', 'description']
+# WIP: test-dojo: might need to make mods here
 HASHCODE_FIELDS_PER_SCANNER = {
     # In checkmarx, same CWE may appear with different severities: example "sql injection" (high) and "blind sql injection" (low).
     # Including the severity in the hash_code keeps those findings not duplicate
@@ -1205,6 +1246,7 @@ HASHCODE_FIELDS_PER_SCANNER = {
 # This tells if we should accept cwe=0 when computing hash_code with a configurable list of fields from HASHCODE_FIELDS_PER_SCANNER (this setting doesn't apply to legacy algorithm)
 # If False and cwe = 0, then the hash_code computation will fallback to legacy algorithm for the concerned finding
 # Default is True (if scanner is not configured here but is configured in HASHCODE_FIELDS_PER_SCANNER, it allows null cwe)
+# WIP: test-dojo: +1 from ^ above comment
 HASHCODE_ALLOWS_NULL_CWE = {
     'Anchore Engine Scan': True,
     'Anchore Enterprise Policy Check': True,
@@ -1243,6 +1285,7 @@ HASHCODE_ALLOWS_NULL_CWE = {
 # List of fields that are known to be usable in hash_code computation)
 # 'endpoints' is a pseudo field that uses the endpoints (for dynamic scanners)
 # 'unique_id_from_tool' is often not needed here as it can be used directly in the dedupe algorithm, but it's also possible to use it for hashing
+# WIP: test-dojo: +1 from ^ above comment
 HASHCODE_ALLOWED_FIELDS = ['title', 'cwe', 'vulnerability_ids', 'line', 'file_path', 'component_name', 'component_version', 'description', 'endpoints', 'unique_id_from_tool', 'severity', 'vuln_id_from_tool']
 
 # Adding fields to the hash_code calculation regardless of the previous settings
@@ -1475,6 +1518,12 @@ LOGGING = {
             'level': '%s' % LOG_LEVEL,
             'propagate': False,
         },
+        'root': {
+            # adding DEBUG logging for all of Django.
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     }
 }
 
@@ -1551,6 +1600,7 @@ DELETE_PREVIEW = env("DD_DELETE_PREVIEW")
 # see https://github.com/laymonage/django-jsonfield-backport
 SILENCED_SYSTEM_CHECKS = ["django_jsonfield_backport.W001"]
 
+# WIP: test-dojo: been looking for this! (need to add EPSS API URL here eventually?)
 VULNERABILITY_URLS = {
     'CVE': 'https://nvd.nist.gov/vuln/detail/',
     'GHSA': 'https://github.com/advisories/',
