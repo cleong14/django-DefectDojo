@@ -39,6 +39,7 @@
                     </h3>
                 </div>
                 <div id="the-filters" class="is-filters panel-body collapse" >
+                    <!-- WIP: test-dojo: dojo/filter_snippet.html -->
                     {% include "dojo/filter_snippet.html" with form=filtered.form %}
                 </div>
             </div>
@@ -162,6 +163,10 @@
             {% endif %}
 
                 <div class="panel panel-default table-responsive">
+                    {% comment %}
+                        WIP: test-dojo: findings table (http://localhost:8080/product/1/finding/all)
+                    {% endcomment %}
+                    <h3>Findings Table</h3>
                     <table id="open_findings"
                            class="tablesorter-bootstrap table table-condensed table-striped table-hover">
                         <thead>
@@ -191,6 +196,10 @@
                             <th></th>
                             <th class="nowrap centered">{% dojo_sort request 'Severity' 'numerical_severity' 'asc' %}</th>
                             <th class="nowrap">{% dojo_sort request 'Name' 'title' %}</th>
+                            {% comment %}
+                                WIP: test-dojo: new EPSS column (http://localhost:8080/product/1/finding/all)
+                            {% endcomment %}
+                            <th>EPSS</th>
                             <th>CWE</th>
                             <th>Vulnerability Id</th>
                             {% if filter_name == 'Closed' %}
@@ -397,6 +406,16 @@
                                   {% endif %}
                                   {% include "dojo/snippets/tags.html" with tags=finding.tags.all %}
                                 </td>
+                                {% comment %}
+                                    WIP: test-dojo: new EPSS data populated table cell (http://localhost:8080/product/1/finding/all)
+                                {% endcomment %}
+                                <td class="nowrap">
+                                  {% if finding.epss > 0 %}
+                                    <a target="_blank" href="{{ finding.epss|epss_url }}">
+                                        <i class="fa fa-external-link"></i> {{ finding.epss|default:"" }}
+                                    </a>
+                                  {% endif %}
+                                </td>
                                 <td class="nowrap">
                                   {% if finding.cwe > 0 %}
                                     <a target="_blank" href="{{ finding.cwe|cwe_url }}">
@@ -406,7 +425,7 @@
                                 </td>
                                 <td class="nowrap">
                                     {% with finding|first_vulnerability_id as first_vulnerability_id %}
-                                    {% if first_vulnerability_id %}  
+                                    {% if first_vulnerability_id %}
                                     {% if first_vulnerability_id|has_vulnerability_url %}
                                         <a target="_blank" href="{{ first_vulnerability_id|vulnerability_url }}">
                                             <i class="fa fa-external-link"></i> {{ first_vulnerability_id }}

@@ -1920,6 +1920,7 @@ class Test_Import_Finding_Action(TimeStampedModel):
         return '%i: %s' % (self.finding.id, self.action)
 
 
+# WIP: test-dojo: `Finding` model
 class Finding(models.Model):
 
     title = models.CharField(max_length=511,

@@ -1376,6 +1376,22 @@ class SimilarFindingFilter(FindingFilter):
             data = data.copy()
 
             data['vulnerability_ids'] = ','.join(self.finding.vulnerability_ids)
+            ## CHECKPOINT:
+            # TODO:
+            #   1. search for all instances of `finding.cwe` and create new `finding.epss` (mimic `finding.cwe`)
+            #   2. sections that will potentionally need modifications:
+            #      1. filters
+            #      2. forms
+            #      3. models
+            #      4. urls
+            #      5. views
+            #      6. possibly more
+            #
+            #   The best approach might be to just step through the entire project while making the required
+            #   modifications. That would be the safest and most thorough way anyway.
+            #
+            ##
+            # data['epss'] = self.finding.epss
             data['cwe'] = self.finding.cwe
             data['file_path'] = self.finding.file_path
             data['line'] = self.finding.line
