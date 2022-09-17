@@ -5,8 +5,6 @@ from celery.schedules import crontab
 from dojo import __version__
 import environ
 from netaddr import IPNetwork, IPSet
-from django.conf.urls import include, url
-import debug_toolbar
 
 # See https://documentation.defectdojo.com/getting_started/configuration/ for options
 # how to tune the configuration to your needs.
@@ -828,7 +826,6 @@ DJANGO_MIDDLEWARE_CLASSES = [
     'auditlog.middleware.AuditlogMiddleware',
     'crum.CurrentRequestUserMiddleware',
     'dojo.request_cache.middleware.RequestCacheMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
 
 MIDDLEWARE = DJANGO_MIDDLEWARE_CLASSES
@@ -847,41 +844,6 @@ EMAIL_CONFIG = env.email_url(
     'DD_EMAIL_URL', default='smtp://user@:password@localhost:25')
 
 vars().update(EMAIL_CONFIG)
-
-# ------------------------------------------------------------------------------
-# DEBUG_TOOLBAR
-# ------------------------------------------------------------------------------
-
-
-def show_toolbar(request):
-    return True
-
-
-DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": show_toolbar,
-    "INTERCEPT_REDIRECTS": False,
-    "SHOW_COLLAPSED": False,
-}
-
-DEBUG_TOOLBAR_PANELS = [
-    # 'ddt_request_history.panels.request_history.RequestHistoryPanel',  # Here it is
-    'debug_toolbar.panels.versions.VersionsPanel',
-    'debug_toolbar.panels.timer.TimerPanel',
-    'debug_toolbar.panels.settings.SettingsPanel',
-    'debug_toolbar.panels.headers.HeadersPanel',
-    'debug_toolbar.panels.request.RequestPanel',
-    'debug_toolbar.panels.sql.SQLPanel',
-    'debug_toolbar.panels.templates.TemplatesPanel',
-    # 'debug_toolbar.panels.staticfiles.StaticFilesPanel',
-    'debug_toolbar.panels.cache.CachePanel',
-    'debug_toolbar.panels.signals.SignalsPanel',
-    'debug_toolbar.panels.logging.LoggingPanel',
-    'debug_toolbar.panels.redirects.RedirectsPanel',
-    'debug_toolbar.panels.profiling.ProfilingPanel',
-    # 'cachalot.panels.CachalotPanel',
-]
-
-EXTRA_URL_PATTERNS = [url(r"^__debug__/", include(debug_toolbar.urls))]
 
 # ------------------------------------------------------------------------------
 # SAML
@@ -1516,12 +1478,6 @@ LOGGING = {
             # The titlecase library is too verbose in it's logging, reducing the verbosity in our logs.
             'handlers': [r'%s' % LOGGING_HANDLER],
             'level': '%s' % LOG_LEVEL,
-            'propagate': False,
-        },
-        'root': {
-            # adding DEBUG logging for all of Django.
-            'handlers': ['console'],
-            'level': 'DEBUG',
             'propagate': False,
         },
     }
