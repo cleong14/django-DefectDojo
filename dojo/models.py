@@ -1920,7 +1920,7 @@ class Test_Import_Finding_Action(TimeStampedModel):
         return '%i: %s' % (self.finding.id, self.action)
 
 
-# WIP: test-dojo: `Finding` model
+# TODO: EPSS Integration: Add EPSS support to `Finding` class in `dojo/models.py#L1923`
 class Finding(models.Model):
 
     title = models.CharField(max_length=511,
@@ -1935,6 +1935,13 @@ class Finding(models.Model):
                             null=True,
                             verbose_name=_('SLA Start Date'),
                             help_text=_("(readonly)The date used as start date for SLA calculation. Set by expiring risk acceptances. Empty by default, causing a fallback to 'date'."))
+
+    # WIP: test-dojo: epss model wip
+    # epss = models.CharField(max_length=50,
+    #                        null=True,
+    #                        blank=True,
+    #                        verbose_name=_("Exploit Prediction Scoring System"),
+    #                        help_text=_("An open, data-driven effort for estimating the likelihood (probability) that a software vulnerability will be exploited in the wild."))
 
     cwe = models.IntegerField(default=0, null=True, blank=True,
                               verbose_name=_("CWE"),
@@ -2238,6 +2245,8 @@ class Finding(models.Model):
 
             models.Index(fields=['test', 'component_name']),
 
+            # WIP: test-dojo: epss model wip
+            # models.Index(fields=['epss']),
             models.Index(fields=['cve']),
             models.Index(fields=['cwe']),
             models.Index(fields=['out_of_scope']),
@@ -2843,6 +2852,8 @@ class Finding(models.Model):
 
         return vulnerability_ids
 
+    # WIP: test-dojo: epss model wip
+    # TODO: function to get EPSS score here(?)
 
 class FindingAdmin(admin.ModelAdmin):
     # For efficiency with large databases, display many-to-many fields with raw
@@ -2867,6 +2878,10 @@ class Vulnerability_Id(models.Model):
     def get_absolute_url(self):
         from django.urls import reverse
         return reverse('view_finding', args=[str(self.finding.id)])
+
+
+# WIP: test-dojo: epss model wip
+# TODO: class EPSS(models.Model) here(?)
 
 
 class Stub_Finding(models.Model):
@@ -2972,8 +2987,19 @@ class Finding_Group(TimeStampedModel):
         ordering = ['id']
 
 
+# TODO: EPSS Integration: Add EPSS support to `Finding_Template` class in `dojo/models.py#L2974`
 class Finding_Template(models.Model):
     title = models.TextField(max_length=1000)
+
+    # WIP: test-dojo: epss model wip
+    # TODO: EPSS score model attribute here(?)
+
+    # epss = models.CharField(max_length=50,
+    #                        null=True,
+    #                        blank=True,
+    #                        verbose_name="Exploit Prediction Scoring System",
+    #                        help_text="An open, data-driven effort for estimating the likelihood (probability) that a software vulnerability will be exploited in the wild.")
+
     cwe = models.IntegerField(default=None, null=True, blank=True)
     cve = models.CharField(max_length=50,
                            null=True,
@@ -3034,6 +3060,9 @@ class Finding_Template(models.Model):
         vulnerability_ids = list(dict.fromkeys(vulnerability_ids))
 
         return vulnerability_ids
+
+    # WIP: test-dojo: epss model wip
+    # TODO: function to get EPSS score here(?)
 
 
 class Vulnerability_Id_Template(models.Model):

@@ -409,12 +409,21 @@
                                 {% comment %}
                                     WIP: test-dojo: new EPSS data populated table cell (http://localhost:8080/product/1/finding/all)
                                 {% endcomment %}
+                                {% comment %}
                                 <td class="nowrap">
                                   {% if finding.epss > 0 %}
                                     <a target="_blank" href="{{ finding.epss|epss_url }}">
                                         <i class="fa fa-external-link"></i> {{ finding.epss|default:"" }}
                                     </a>
                                   {% endif %}
+                                </td>
+                                {% endcomment %}
+                                {% comment %}
+                                    TODO: EPSS Integration: Add EPSS support to UI in
+                                    `dojo/templates/dojo/findings_list_snippet.html#L400`
+                                {% endcomment %}
+                                <td class="nowrap">
+                                  <a target="_blank" href="#"><i class="fa fa-external-link"></i> EPSS_SCORE</a>
                                 </td>
                                 <td class="nowrap">
                                   {% if finding.cwe > 0 %}
